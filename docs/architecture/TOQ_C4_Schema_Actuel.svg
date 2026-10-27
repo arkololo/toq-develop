@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1510" viewBox="0 0 2400 1510">
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#67887c"/></marker>
+  <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#12382e" flood-opacity="0.08"/></filter>
+</defs>
+<rect width="2400" height="1510" fill="#f7f6ef"/>
+<rect x="0" y="0" width="2400" height="16" fill="#07533d"/>
+
+<text x="68" y="75" fill="#064d39" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="700" text-anchor="start" class="">TOQ · Architecture actuelle</text>
+<text x="69" y="115" fill="#63766d" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" text-anchor="start" class="">Vue C4 Container · lecture du code et de Docker Compose · 01/10/2026</text>
+<rect x="350" y="160" width="1240" height="1155" rx="24" fill="#fcfdf9" stroke="#9ab5a7" stroke-width="3" stroke-dasharray="12 8"/>
+<text x="380" y="201" fill="#17624b" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700" text-anchor="start" class="">MACHINE DE DÉVELOPPEMENT · DOCKER COMPOSE</text>
+<text x="380" y="232" fill="#678579" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="400" text-anchor="start" class="">HTTP local · services internes non exposés</text>
+<rect x="1145" y="195" width="395" height="1068" rx="22" fill="#f0f5f1" stroke="#9fb9ac" stroke-width="2" stroke-dasharray="9 7"/>
+<text x="1175" y="229" fill="#155441" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" text-anchor="start" class="">PostgreSQL</text>
+<text x="1175" y="252" fill="#5b7569" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" text-anchor="start" class="">1 conteneur · 6 bases logiques</text>
+<rect x="1680" y="160" width="655" height="775" rx="24" fill="#fffdf8" stroke="#c9d7ce" stroke-width="2"/>
+<text x="1710" y="207" fill="#155441" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" text-anchor="start" class="">SERVICES EXTERNES</text>
+<text x="1710" y="239" fill="#64776c" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Appels sortants depuis les services</text>
+<rect x="1680" y="960" width="655" height="355" rx="24" fill="#f0f5f1" stroke="#c4d5c9" stroke-width="2"/>
+<text x="1710" y="1005" fill="#155441" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700" text-anchor="start" class="">ÉCARTS AVEC LE SCHÉMA IMAGINÉ</text>
+<text x="1710" y="1049" fill="#345b4a" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start" class="">• Courses → intégrées dans Planner Service</text>
+<text x="1710" y="1093" fill="#345b4a" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start" class="">• IA → intégrée dans User Service</text>
+<text x="1710" y="1137" fill="#345b4a" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start" class="">• Libraries → modules internes, non déployés</text>
+<text x="1710" y="1181" fill="#345b4a" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start" class="">• Strava, Lidl, RabbitMQ, Grafana : absents</text>
+<text x="1710" y="1225" fill="#345b4a" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start" class="">• CIQUAL : données importées localement</text>
+<text x="1710" y="1268" fill="#698074" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="400" text-anchor="start" class="">Aucun serveur ni staging distant dans cette vue.</text>
+<rect x="65" y="260" width="245" height="112" rx="18" fill="#e5f4ed" stroke="#89c1a3" stroke-width="2.5"/>
+<rect x="65" y="260" width="8" height="112" rx="4" fill="#119262" stroke="#119262" stroke-width="0"/>
+<text x="95" y="300" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">Utilisateur</text>
+<text x="95" y="330" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Navigue, s&#x27;inscrit</text>
+<text x="95" y="355" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">et utilise TOQ</text>
+<rect x="65" y="478" width="245" height="156" rx="18" fill="#e4eff7" stroke="#9fc1d6" stroke-width="2.5"/>
+<rect x="65" y="478" width="8" height="156" rx="4" fill="#2789b1" stroke="#2789b1" stroke-width="0"/>
+<text x="95" y="518" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">Navigateur</text>
+<text x="95" y="548" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">React + TypeScript</text>
+<text x="95" y="573" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">SPA React / Vite</text>
+<text x="95" y="598" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">OIDC avec Keycloak</text>
+<path d="M188 372 L188 476" fill="none" stroke="#67887c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="207" y="422" fill="#668075" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" text-anchor="start" class="">usage</text>
+<rect x="380" y="510" width="270" height="204" rx="18" fill="#fff8e8" stroke="#e3c992" stroke-width="2.5"/>
+<rect x="380" y="510" width="8" height="204" rx="4" fill="#d6a13e" stroke="#d6a13e" stroke-width="0"/>
+<text x="410" y="550" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">Frontend Edge</text>
+<text x="410" y="580" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Nginx :8080</text>
+<text x="410" y="605" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Fichiers React / Vite</text>
+<text x="410" y="630" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Proxy /api/v1/*</text>
+<text x="410" y="655" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">5 services REST</text>
+<rect x="775" y="260" width="315" height="118" rx="18" fill="#e9edfb" stroke="#7c93d5" stroke-width="2.5"/>
+<rect x="775" y="260" width="8" height="118" rx="4" fill="#7c93d5" stroke="#7c93d5" stroke-width="0"/>
+<text x="805" y="300" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">Keycloak</text>
+<text x="805" y="330" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Identité, login/register</text>
+<text x="805" y="355" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">OIDC, JWT / JWKS</text>
+<rect x="1180" y="264" width="325" height="110" rx="18" fill="#ffffff" stroke="#b6c9bc" stroke-width="2.5"/>
+<rect x="1180" y="264" width="8" height="110" rx="4" fill="#7c93d5" stroke="#7c93d5" stroke-width="0"/>
+<text x="1210" y="304" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">keycloak</text>
+<text x="1210" y="334" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Comptes, rôles</text>
+<text x="1210" y="359" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">et sessions</text>
+<path d="M1092 319 L1175 319" fill="none" stroke="#67887c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="775" y="425" width="315" height="118" rx="18" fill="#e8f5ec" stroke="#3f9c6d" stroke-width="2.5"/>
+<rect x="775" y="425" width="8" height="118" rx="4" fill="#3f9c6d" stroke="#3f9c6d" stroke-width="0"/>
+<text x="805" y="465" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">User Service</text>
+<text x="805" y="495" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Profil, préférences, objectifs</text>
+<text x="805" y="520" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Agent TOQi / Gemini</text>
+<rect x="1180" y="429" width="325" height="110" rx="18" fill="#ffffff" stroke="#b6c9bc" stroke-width="2.5"/>
+<rect x="1180" y="429" width="8" height="110" rx="4" fill="#3f9c6d" stroke="#3f9c6d" stroke-width="0"/>
+<text x="1210" y="469" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">toq_user</text>
+<text x="1210" y="499" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Profil, objectifs</text>
+<text x="1210" y="524" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">et préférences</text>
+<path d="M1092 484 L1175 484" fill="none" stroke="#67887c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="775" y="590" width="315" height="118" rx="18" fill="#e8f5ec" stroke="#3f9c6d" stroke-width="2.5"/>
+<rect x="775" y="590" width="8" height="118" rx="4" fill="#3f9c6d" stroke="#3f9c6d" stroke-width="0"/>
+<text x="805" y="630" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">Recipe Service</text>
+<text x="805" y="660" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Recettes, ingrédients</text>
+<text x="805" y="685" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Imports TheMealDB</text>
+<rect x="1180" y="594" width="325" height="110" rx="18" fill="#ffffff" stroke="#b6c9bc" stroke-width="2.5"/>
+<rect x="1180" y="594" width="8" height="110" rx="4" fill="#3f9c6d" stroke="#3f9c6d" stroke-width="0"/>
+<text x="1210" y="634" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">toq_recipe</text>
+<text x="1210" y="664" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Recettes, ingrédients</text>
+<text x="1210" y="689" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">et images</text>
+<path d="M1092 649 L1175 649" fill="none" stroke="#67887c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="775" y="755" width="315" height="118" rx="18" fill="#fff0df" stroke="#d9984d" stroke-width="2.5"/>
+<rect x="775" y="755" width="8" height="118" rx="4" fill="#d9984d" stroke="#d9984d" stroke-width="0"/>
+<text x="805" y="795" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">Nutrition Service</text>
+<text x="805" y="825" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Suivi, aliments, calculs</text>
+<text x="805" y="850" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">CIQUAL local + OFF</text>
+<rect x="1180" y="759" width="325" height="110" rx="18" fill="#ffffff" stroke="#b6c9bc" stroke-width="2.5"/>
+<rect x="1180" y="759" width="8" height="110" rx="4" fill="#d9984d" stroke="#d9984d" stroke-width="0"/>
+<text x="1210" y="799" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">toq_nutrition</text>
+<text x="1210" y="829" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Référentiel CIQUAL</text>
+<text x="1210" y="854" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">et suivi nutritionnel</text>
+<path d="M1092 814 L1175 814" fill="none" stroke="#67887c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="775" y="920" width="315" height="118" rx="18" fill="#fff0df" stroke="#d9984d" stroke-width="2.5"/>
+<rect x="775" y="920" width="8" height="118" rx="4" fill="#d9984d" stroke="#d9984d" stroke-width="0"/>
+<text x="805" y="960" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">Planner Service</text>
+<text x="805" y="990" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Planning des repas</text>
+<text x="805" y="1015" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Listes de courses</text>
+<rect x="1180" y="924" width="325" height="110" rx="18" fill="#ffffff" stroke="#b6c9bc" stroke-width="2.5"/>
+<rect x="1180" y="924" width="8" height="110" rx="4" fill="#d9984d" stroke="#d9984d" stroke-width="0"/>
+<text x="1210" y="964" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">toq_planner</text>
+<text x="1210" y="994" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Planning et listes</text>
+<text x="1210" y="1019" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">de courses</text>
+<path d="M1092 979 L1175 979" fill="none" stroke="#67887c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="775" y="1085" width="315" height="118" rx="18" fill="#f1eaf8" stroke="#ac81c1" stroke-width="2.5"/>
+<rect x="775" y="1085" width="8" height="118" rx="4" fill="#ac81c1" stroke="#ac81c1" stroke-width="0"/>
+<text x="805" y="1125" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">Social Service</text>
+<text x="805" y="1155" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Publications, commentaires</text>
+<text x="805" y="1180" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Favoris et partages</text>
+<rect x="1180" y="1089" width="325" height="110" rx="18" fill="#ffffff" stroke="#b6c9bc" stroke-width="2.5"/>
+<rect x="1180" y="1089" width="8" height="110" rx="4" fill="#ac81c1" stroke="#ac81c1" stroke-width="0"/>
+<text x="1210" y="1129" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">toq_social</text>
+<text x="1210" y="1159" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Publications</text>
+<text x="1210" y="1184" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">et interactions</text>
+<path d="M1092 1144 L1175 1144" fill="none" stroke="#67887c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M310 556 L374 556" fill="none" stroke="#4b8c72" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="320" y="543" fill="#397b61" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="start" class="">HTTP</text>
+<path d="M652 613 L708 613 L708 1144" fill="none" stroke="#4b8c72" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M708 484 L770 484" fill="none" stroke="#4b8c72" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M708 649 L770 649" fill="none" stroke="#4b8c72" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M708 814 L770 814" fill="none" stroke="#4b8c72" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M708 979 L770 979" fill="none" stroke="#4b8c72" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M708 1144 L770 1144" fill="none" stroke="#4b8c72" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="655" y="748" fill="#397b61" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700" text-anchor="middle" class="">/api/v1/*</text>
+<path d="M310 494 L332 494 L332 390 L675 390 L675 319 L770 319" fill="none" stroke="#6d85bf" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="9 7" marker-end="url(#arrow)"/>
+<text x="416" y="382" fill="#526daa" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" text-anchor="start" class="">OIDC / PKCE → :8081</text>
+<path d="M1060 543 L1060 565 L1610 565 L1610 555 L1715 555" fill="none" stroke="#9c86c9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+<rect x="1720" y="500" width="535" height="110" rx="18" fill="#eee9fa" stroke="#9c86c9" stroke-width="2.5"/>
+<rect x="1720" y="500" width="8" height="110" rx="4" fill="#9c86c9" stroke="#9c86c9" stroke-width="0"/>
+<text x="1750" y="540" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">Gemini API</text>
+<text x="1750" y="570" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Agent TOQi</text>
+<text x="1750" y="595" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Clé côté backend uniquement</text>
+<path d="M1060 708 L1060 730 L1610 730 L1610 720 L1715 720" fill="none" stroke="#78b4d2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+<rect x="1720" y="665" width="535" height="110" rx="18" fill="#e4f0f8" stroke="#78b4d2" stroke-width="2.5"/>
+<rect x="1720" y="665" width="8" height="110" rx="4" fill="#78b4d2" stroke="#78b4d2" stroke-width="0"/>
+<text x="1750" y="705" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">TheMealDB</text>
+<text x="1750" y="735" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Recherche et import</text>
+<text x="1750" y="760" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">de recettes en ligne</text>
+<path d="M1060 873 L1060 895 L1610 895 L1610 870 L1715 870" fill="none" stroke="#78b4d2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+<rect x="1720" y="815" width="535" height="110" rx="18" fill="#e4f0f8" stroke="#78b4d2" stroke-width="2.5"/>
+<rect x="1720" y="815" width="8" height="110" rx="4" fill="#78b4d2" stroke="#78b4d2" stroke-width="0"/>
+<text x="1750" y="855" fill="#173b33" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="start" class="">Open Food Facts</text>
+<text x="1750" y="885" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Produits et valeurs</text>
+<text x="1750" y="910" fill="#466257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">nutritionnelles</text>
+<rect x="65" y="1350" width="2270" height="112" rx="20" fill="#ffffff" stroke="#d6e1da" stroke-width="2"/>
+<text x="96" y="1393" fill="#155441" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" text-anchor="start" class="">Légende</text>
+<path d="M210 1383 L292 1383" fill="none" stroke="#67887c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="308" y="1391" fill="#4b6257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">SQL / REST local</text>
+<path d="M600 1383 L682 1383" fill="none" stroke="#6d85bf" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="9 7" marker-end="url(#arrow)"/>
+<text x="698" y="1391" fill="#4b6257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Authentification</text>
+<path d="M1020 1383 L1102 1383" fill="none" stroke="#9c86c9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+<text x="1118" y="1391" fill="#4b6257" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">API externe</text>
+<text x="96" y="1430" fill="#596e61" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" text-anchor="start" class="">Les 5 API sont des conteneurs Java / Spring Boot. Elles vérifient les JWT Keycloak. Les appels entre services sont listés juste au-dessus.</text>
+<text x="65" y="1329" fill="#406252" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start" class="">Appels internes : User → Recipe, Planner · Nutrition → Recipe · Planner → Recipe · Social → User, Recipe</text>
+</svg>

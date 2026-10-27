@@ -1,0 +1,75 @@
+@startuml
+!pragma layout smetana
+!include <C4/C4_Container>
+
+title TOQ — C4 Container — Proposition de Phase 0
+LAYOUT_TOP_DOWN()
+
+Person(user, "Utilisateur", "Navigateur web")
+System_Ext(off, "Open Food Facts", "Produits et données nutritionnelles")
+
+System_Boundary(toq, "TOQ") {
+  Container(web, "Frontend React", "SPA exécutée dans le navigateur", "Pages publiques, tableau de bord, Think, recettes, planning, courses et profil.\nPartager en P1. Tokens conservés en mémoire.")
+  Container(edge, "Frontend / reverse proxy", "Un conteneur Nginx", "Sert le build React ; route /api/v1 et le domaine auth.\nTLS, en-têtes de sécurité et limites de requêtes.")
+  Container(auth, "Keycloak", "OpenID Connect / OAuth 2.0", "Identités, mots de passe, tokens et rôles.\nRealm TOQ ; client public toq-web ; PKCE.")
+
+  Boundary(services, "Services métier — Java / Spring Boot") {
+    Container(users, "User Service", "Spring Boot", "Profil lié au sub Keycloak, préférences, allergies, exclusions et objectifs.")
+    Container(nutrition, "Nutrition Service", "Spring Boot", "Normalise les aliments, appelle OFF, calcule macros et portions, compare aux objectifs.")
+    Container(planner, "Planner Service", "Spring Boot", "Planning hebdomadaire et liste de courses.\nConserve les instantanés de recettes planifiées.")
+    Container(recipe, "Recipe Service", "Spring Boot", "Recettes, ingrédients, quantités, étapes, portions et médias.\nVariantes et labels en P1.")
+    Container(social, "Social Service — P1", "Spring Boot", "Publications, feed, likes, commentaires, favoris et partages.\nDésactivé dans le MVP.")
+  }
+
+  Boundary(pg, "Une instance PostgreSQL — six bases logiques et rôles séparés") {
+    ContainerDb(userdb, "toq_user", "PostgreSQL", "Données exclusives de User")
+    ContainerDb(nutritiondb, "toq_nutrition", "PostgreSQL", "Aliments, cache fournisseur et calculs nutritionnels")
+    ContainerDb(plannerdb, "toq_planner", "PostgreSQL", "Plans, repas, instantanés et courses")
+    ContainerDb(recipedb, "toq_recipe", "PostgreSQL", "Recettes, ingrédients et métadonnées médias")
+    ContainerDb(socialdb, "toq_social — P1", "PostgreSQL", "Données sociales ; création à l'activation de P1")
+    ContainerDb(authdb, "keycloak", "PostgreSQL", "Données gérées exclusivement par Keycloak")
+  }
+  Container(media, "Médias des recettes", "Volume de fichiers chiffré", "Possédé par Recipe ; accès soumis à la visibilité de la recette.")
+}
+
+Rel(user, web, "Utilise", "HTTPS via Nginx")
+Rel(web, edge, "Charge les assets ; appelle les API ; réalise le flux OIDC + PKCE", "HTTPS")
+Rel(edge, auth, "Route le domaine auth ; redirections et échange OIDC", "HTTPS")
+Rel(edge, users, "Route /api/v1/users", "HTTPS / JSON")
+Rel(edge, recipe, "Route /api/v1/recipes et /ingredients", "HTTPS / JSON")
+Rel(edge, nutrition, "Route /api/v1/nutrition", "HTTPS / JSON")
+Rel(edge, planner, "Route /api/v1/plans et /shopping-lists", "HTTPS / JSON")
+Rel(edge, social, "Route /api/v1/social, /posts, /comments et /favorites — P1", "HTTPS / JSON")
+
+Rel(nutrition, recipe, "Lit l'instantané de recette à calculer", "HTTPS / REST")
+Rel(nutrition, planner, "Lit les repas planifiés à analyser", "HTTPS / REST")
+Rel(nutrition, users, "Lit les objectifs de l'utilisateur courant", "HTTPS / REST")
+Rel(planner, recipe, "Lit et fige une recette lors de la planification", "HTTPS / REST")
+Rel(social, recipe, "Vérifie l'existence et la visibilité — P1", "HTTPS / REST")
+Rel(social, users, "Lit le profil public — P1", "HTTPS / REST")
+Rel(nutrition, off, "Recherche / récupère les aliments ; cache local", "HTTPS / JSON")
+
+Rel(users, userdb, "Lit / écrit", "PostgreSQL / TLS")
+Rel(recipe, recipedb, "Lit / écrit", "PostgreSQL / TLS")
+Rel(nutrition, nutritiondb, "Lit / écrit", "PostgreSQL / TLS")
+Rel(planner, plannerdb, "Lit / écrit", "PostgreSQL / TLS")
+Rel(social, socialdb, "Lit / écrit — P1", "PostgreSQL / TLS")
+Rel(auth, authdb, "Lit / écrit", "PostgreSQL / TLS")
+Rel(recipe, media, "Lit / écrit les images autorisées", "Montage local")
+
+note right of auth
+  Chaque service valide localement les JWT avec Spring Security.
+  Clés JWKS Keycloak récupérées en HTTPS et mises en cache.
+  Ces cinq relations répétitives sont omises pour la lisibilité.
+  Identité et autorisations restent contrôlées à chaque service.
+end note
+
+note bottom of services
+  REST synchrone ; aucune lecture SQL entre domaines.
+  Le frontend demande le calcul à Nutrition, qui lit Recipe.
+  Recipe ne dépend pas de Nutrition : pas de cycle métier.
+  Suppression de compte et flux d'exploitation omis ici.
+end note
+
+SHOW_LEGEND()
+@enduml

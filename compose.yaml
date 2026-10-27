@@ -1,0 +1,5 @@
+name: toq-local
+
+include:
+  - path: ./infra/compose/compose.dev.yml
+    project_directory: .

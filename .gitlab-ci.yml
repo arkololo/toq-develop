@@ -1,0 +1,58 @@
+# Pipeline prévu pour un runner dédié à TOQ sur la machine locale.
+# Aucun déploiement distant ni publication en registry externe.
+stages:
+  - validate
+  - test
+  - build
+
+default:
+  tags:
+    - toq-local
+  interruptible: true
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+
+backend:
+  stage: test
+  image: maven:3.9.12-eclipse-temurin-21@sha256:c3c9d3ac4ce8431a3995c0318b8d390f448e693dd4fabc16e9b68d2e1f3d7b46
+  variables:
+    MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  cache:
+    key: maven-phase1
+    paths:
+      - .m2/repository/
+  script:
+    - sh ./mvnw --batch-mode --no-transfer-progress verify
+  artifacts:
+    when: always
+    reports:
+      junit: services/*/target/surefire-reports/TEST-*.xml
+
+frontend:
+  stage: validate
+  image: node:22.23.2-alpine@sha256:b6f26b36c8ff49624cfdac716b8ea1138d606df02586a77d364bb5536a634f85
+  cache:
+    key:
+      files:
+        - frontend/package-lock.json
+    paths:
+      - frontend/.npm/
+  script:
+    - cd frontend
+    - npm ci --cache .npm --prefer-offline
+    - npm run lint
+    - npm run test -- --run
+    - npm audit --audit-level=high --omit=dev
+    - npm run build
+
+images-locales:
+  stage: build
+  needs: [backend, frontend]
+  script:
+    - sh scripts/setup-local.sh
+    - docker compose config --quiet
+    - docker compose --parallel 2 build

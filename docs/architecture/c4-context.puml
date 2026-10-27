@@ -1,0 +1,25 @@
+@startuml
+!pragma layout smetana
+!include <C4/C4_Context>
+
+title TOQ — C4 Context — Proposition de Phase 0
+LAYOUT_TOP_DOWN()
+
+Person(user, "Utilisateur", "Organise ses repas, suit ses objectifs et gère ses recettes.\nPartage et interagit en P1.")
+Person(admin, "Administrateur / modérateur", "Administre les accès et exploite TOQ.\nModère les publications en P1.")
+
+System(toq, "TOQ", "Application d'organisation et de partage de repas.\nRecettes, nutrition, planning, liste de courses.\nAuthentification Keycloak intégrée au système.")
+System_Ext(off, "Open Food Facts", "API de produits, nutriments, allergènes et labels.\nSource externe appelée par le backend.")
+
+Rel(user, toq, "Utilise les pages publiques et les fonctions authentifiées", "HTTPS")
+Rel(admin, toq, "Administre selon ses rôles", "HTTPS ; accès d'administration restreint")
+Rel(toq, off, "Recherche et enrichit les aliments", "HTTPS / JSON")
+
+note bottom of toq
+  P0 : identité, profil, recettes, nutrition, planning et courses.
+  P1 : réseau social, favoris, likes et commentaires.
+  Aucune fonction ni infrastructure IA dans cette proposition.
+end note
+
+SHOW_LEGEND()
+@enduml

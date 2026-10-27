@@ -1,0 +1,254 @@
+# Local HTTP only. Run from the repository root through compose.yaml.
+# Application authentication and the TOQ realm belong to Phase 2.
+x-common: &common
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+x-backend: &backend
+  <<: *common
+  init: true
+  read_only: true
+  tmpfs:
+    - /tmp:rw,nosuid,nodev,size=128m
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  mem_limit: 640m
+  cpus: 1.0
+  networks:
+    - backend
+    - data
+  depends_on:
+    postgres:
+      condition: service_healthy
+  healthcheck:
+    test: ["CMD", "curl", "--fail", "--silent", "--max-time", "4", "http://127.0.0.1:8081/actuator/health/readiness"]
+    interval: 10s
+    timeout: 5s
+    retries: 12
+    start_period: 60s
+  stop_grace_period: 30s
+
+services:
+  postgres:
+    <<: *common
+    image: postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    environment:
+      POSTGRES_USER: toq_admin
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run the local setup script first}
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+      TOQ_USER_DB_PASSWORD: ${TOQ_USER_DB_PASSWORD:?Run the local setup script first}
+      TOQ_RECIPE_DB_PASSWORD: ${TOQ_RECIPE_DB_PASSWORD:?Run the local setup script first}
+      TOQ_NUTRITION_DB_PASSWORD: ${TOQ_NUTRITION_DB_PASSWORD:?Run the local setup script first}
+      TOQ_PLANNER_DB_PASSWORD: ${TOQ_PLANNER_DB_PASSWORD:?Run the local setup script first}
+      TOQ_SOCIAL_DB_PASSWORD: ${TOQ_SOCIAL_DB_PASSWORD:?Run the local setup script first}
+      KEYCLOAK_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?Run the local setup script first}
+    command: ["postgres", "-c", "max_connections=100", "-c", "shared_buffers=128MB", "-c", "password_encryption=scram-sha-256"]
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./infra/postgres/init/001-databases.sql:/docker-entrypoint-initdb.d/001-databases.sql:ro
+    networks:
+      - data
+    mem_limit: 768m
+    cpus: 1.0
+    shm_size: 128m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U toq_admin -d postgres"]
+      interval: 5s
+      timeout: 4s
+      retries: 15
+      start_period: 30s
+    stop_grace_period: 30s
+
+  keycloak:
+    <<: *common
+    image: quay.io/keycloak/keycloak:26.7.4@sha256:82a77884f3af238beab1e7afd63b5f530e1b5c0590bd7aa60b40a40463e29b2c
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak_app
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?Run the local setup script first}
+      KC_BOOTSTRAP_ADMIN_USERNAME: toq-admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?Run the local setup script first}
+      KC_HOSTNAME: http://localhost:8081
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+      KC_CACHE: local
+      KC_DB_POOL_INITIAL_SIZE: "2"
+      KC_DB_POOL_MIN_SIZE: "2"
+      KC_DB_POOL_MAX_SIZE: "10"
+      JAVA_OPTS_KC_HEAP: -XX:InitialRAMPercentage=20 -XX:MaxRAMPercentage=60
+    ports:
+      - "127.0.0.1:8081:8080"
+    volumes:
+      - ./infra/keycloak/realm-import:/opt/keycloak/data/import:ro
+      - ./infra/keycloak/themes:/opt/keycloak/themes:ro
+    networks:
+      - edge
+      - backend
+      - data
+    depends_on:
+      postgres:
+        condition: service_healthy
+    mem_limit: 1280m
+    cpus: 1.5
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test:
+        - CMD
+        - /bin/bash
+        - -ec
+        - "{ printf 'HEAD /health/ready HTTP/1.0\r\n\r\n' >&0; grep -q 'HTTP/1.0 200'; } 0<>/dev/tcp/127.0.0.1/9000"
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 90s
+    stop_grace_period: 30s
+
+  user-service:
+    <<: *backend
+    image: toq/user-service:local
+    build:
+      context: .
+      dockerfile: services/user-service/Dockerfile
+    networks:
+      - backend
+      - data
+      - outbound
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/toq_user
+      SPRING_DATASOURCE_USERNAME: toq_user_app
+      SPRING_DATASOURCE_PASSWORD: ${TOQ_USER_DB_PASSWORD:?Run the local setup script first}
+      TOQ_OIDC_ISSUER_URI: http://localhost:8081/realms/TOQ
+      TOQ_OIDC_JWK_SET_URI: http://keycloak:8080/realms/TOQ/protocol/openid-connect/certs
+      TOQ_OIDC_AUDIENCE: toq-api
+      TOQ_GEMINI_API_KEY: ${TOQ_GEMINI_API_KEY:-}
+      TOQ_GEMINI_MODEL: ${TOQ_GEMINI_MODEL:-gemini-3.5-flash-lite}
+      JAVA_TOOL_OPTIONS: -XX:InitialRAMPercentage=15 -XX:MaxRAMPercentage=60 -XX:+ExitOnOutOfMemoryError
+
+  recipe-service:
+    <<: *backend
+    image: toq/recipe-service:local
+    build:
+      context: .
+      dockerfile: services/recipe-service/Dockerfile
+    networks:
+      - backend
+      - data
+      - outbound
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/toq_recipe
+      SPRING_DATASOURCE_USERNAME: toq_recipe_app
+      SPRING_DATASOURCE_PASSWORD: ${TOQ_RECIPE_DB_PASSWORD:?Run the local setup script first}
+      TOQ_OIDC_ISSUER_URI: http://localhost:8081/realms/TOQ
+      TOQ_OIDC_JWK_SET_URI: http://keycloak:8080/realms/TOQ/protocol/openid-connect/certs
+      TOQ_OIDC_AUDIENCE: toq-api
+      JAVA_TOOL_OPTIONS: -XX:InitialRAMPercentage=15 -XX:MaxRAMPercentage=60 -XX:+ExitOnOutOfMemoryError
+
+  nutrition-service:
+    <<: *backend
+    image: toq/nutrition-service:local
+    build:
+      context: .
+      dockerfile: services/nutrition-service/Dockerfile
+    networks:
+      - backend
+      - data
+      - outbound
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/toq_nutrition
+      SPRING_DATASOURCE_USERNAME: toq_nutrition_app
+      SPRING_DATASOURCE_PASSWORD: ${TOQ_NUTRITION_DB_PASSWORD:?Run the local setup script first}
+      TOQ_OIDC_ISSUER_URI: http://localhost:8081/realms/TOQ
+      TOQ_OIDC_JWK_SET_URI: http://keycloak:8080/realms/TOQ/protocol/openid-connect/certs
+      TOQ_OIDC_AUDIENCE: toq-api
+      JAVA_TOOL_OPTIONS: -XX:InitialRAMPercentage=15 -XX:MaxRAMPercentage=60 -XX:+ExitOnOutOfMemoryError
+
+  planner-service:
+    <<: *backend
+    image: toq/planner-service:local
+    build:
+      context: .
+      dockerfile: services/planner-service/Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/toq_planner
+      SPRING_DATASOURCE_USERNAME: toq_planner_app
+      SPRING_DATASOURCE_PASSWORD: ${TOQ_PLANNER_DB_PASSWORD:?Run the local setup script first}
+      TOQ_OIDC_ISSUER_URI: http://localhost:8081/realms/TOQ
+      TOQ_OIDC_JWK_SET_URI: http://keycloak:8080/realms/TOQ/protocol/openid-connect/certs
+      TOQ_OIDC_AUDIENCE: toq-api
+      JAVA_TOOL_OPTIONS: -XX:InitialRAMPercentage=15 -XX:MaxRAMPercentage=60 -XX:+ExitOnOutOfMemoryError
+
+  social-service:
+    <<: *backend
+    image: toq/social-service:local
+    build:
+      context: .
+      dockerfile: services/social-service/Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/toq_social
+      SPRING_DATASOURCE_USERNAME: toq_social_app
+      SPRING_DATASOURCE_PASSWORD: ${TOQ_SOCIAL_DB_PASSWORD:?Run the local setup script first}
+      TOQ_OIDC_ISSUER_URI: http://localhost:8081/realms/TOQ
+      TOQ_OIDC_JWK_SET_URI: http://keycloak:8080/realms/TOQ/protocol/openid-connect/certs
+      TOQ_OIDC_AUDIENCE: toq-api
+      JAVA_TOOL_OPTIONS: -XX:InitialRAMPercentage=15 -XX:MaxRAMPercentage=60 -XX:+ExitOnOutOfMemoryError
+
+  frontend-edge:
+    <<: *common
+    image: toq/frontend-edge:local
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=32m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks:
+      - edge
+      - backend
+    depends_on:
+      user-service:
+        condition: service_healthy
+      recipe-service:
+        condition: service_healthy
+      nutrition-service:
+        condition: service_healthy
+      planner-service:
+        condition: service_healthy
+      social-service:
+        condition: service_healthy
+    mem_limit: 128m
+    cpus: 0.5
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+networks:
+  edge:
+  backend:
+    internal: true
+  data:
+    internal: true
+  outbound:
+
+volumes:
+  postgres-data:

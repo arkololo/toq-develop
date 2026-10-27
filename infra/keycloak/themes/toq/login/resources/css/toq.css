@@ -1,0 +1,70 @@
+:root {
+  --toq-green: #145b43;
+  --toq-ink: #183d31;
+  --toq-cream: #faf7ec;
+  --toq-border: #dedfd0;
+}
+body.login-pf {
+  min-height: 100vh;
+  color: var(--toq-ink);
+  background: var(--toq-cream) !important;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+.pf-v5-c-login {
+  min-height: 100vh;
+  background: radial-gradient(circle at 73% 52%, #e8efdb 0 24%, transparent 24.2%)
+    right center / 65% 100% no-repeat;
+}
+.pf-v5-c-login__container {
+  width: min(1120px, calc(100% - 40px));
+  max-width: 1120px;
+  display: grid;
+  grid-template-columns: minmax(0, 470px) minmax(0, 1fr);
+  grid-template-areas: "main header";
+  column-gap: clamp(24px, 6vw, 90px);
+  align-items: center;
+}
+.pf-v5-c-login__header {
+  grid-area: header;
+  align-self: center;
+  min-height: 510px;
+  padding: 32px 0 0;
+  background: url('../img/toqi-welcome.png') center 74px / min(90%, 440px) auto no-repeat;
+}
+#kc-header-wrapper {
+  width: 185px;
+  height: 88px;
+  overflow: hidden;
+  text-indent: -9999px;
+  background: url('../img/toq-logo.png') center / contain no-repeat;
+}
+.pf-v5-c-login__main {
+  grid-area: main;
+  width: 100%;
+  max-width: none;
+  border: 1px solid var(--toq-border);
+  border-radius: 24px;
+  box-shadow: 0 24px 60px #183d3117;
+  overflow: hidden;
+  background: #fffdf6;
+}
+.pf-v5-c-login__main-header,
+.pf-v5-c-login__main-body,
+.pf-v5-c-login__main-footer { padding-left: clamp(24px, 4vw, 45px); padding-right: clamp(24px, 4vw, 45px); }
+.pf-v5-c-login__main-header { padding-top: 34px; }
+.pf-v5-c-login__main-header { display: flex; flex-direction: column-reverse; align-items: stretch; gap: 16px; }
+.pf-v5-c-login__main-header-utilities { align-self: flex-end; }
+#kc-page-title { width: 100%; max-width: none; color: var(--toq-green); font-size: clamp(1.8rem, 3vw, 2.4rem); letter-spacing: -.04em; overflow-wrap: normal; }
+.pf-v5-c-form__label-text { color: var(--toq-ink); font-weight: 650; }
+.pf-v5-c-form-control, .pf-v5-c-form-control > input { border-radius: 9px; }
+.pf-v5-c-form-control:focus-within { --pf-v5-c-form-control--after--BorderBottomColor: var(--toq-green); }
+.pf-v5-c-button.pf-m-primary { background: var(--toq-green); border-radius: 10px; min-height: 44px; }
+.pf-v5-c-button.pf-m-primary:hover { background: #0b4935; }
+.pf-v5-c-login a { color: var(--toq-green); font-weight: 650; }
+.pf-v5-c-login__main-footer { border-top: 1px solid var(--toq-border); }
+@media (max-width: 800px) {
+  .pf-v5-c-login__container { display: block; width: min(470px, calc(100% - 32px)); }
+  .pf-v5-c-login__header { min-height: 90px; padding: 0; background: none; }
+  #kc-header-wrapper { margin: auto; }
+  .pf-v5-c-login__main { margin-bottom: 28px; }
+}

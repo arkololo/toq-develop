@@ -1,0 +1,59 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 4MB
+  application:
+    name: social-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      connection-timeout: 5000
+  flyway:
+    enabled: true
+    clean-disabled: true
+    validate-migration-naming: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${TOQ_OIDC_ISSUER_URI}
+          jwk-set-uri: ${TOQ_OIDC_JWK_SET_URI}
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+
+server:
+  port: 8080
+  shutdown: graceful
+  error:
+    include-message: never
+    include-stacktrace: never
+
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: health
+      discovery:
+        enabled: false
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState,db
+        liveness:
+          include: livenessState
+
+
+toq:
+  security:
+    audience: ${TOQ_OIDC_AUDIENCE:toq-api}

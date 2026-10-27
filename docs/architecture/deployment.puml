@@ -1,0 +1,118 @@
+@startuml
+!pragma layout smetana
+title TOQ — Déploiement — Proposition de Phase 0
+top to bottom direction
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 13
+skinparam nodesep 45
+skinparam ranksep 55
+skinparam ArrowColor #365A4B
+skinparam nodeBackgroundColor #F7F8F2
+skinparam packageBackgroundColor #F1F5EC
+skinparam databaseBackgroundColor #E6EFDF
+skinparam cloudBackgroundColor #F9F8EF
+
+actor "Utilisateur\nNavigateur / React SPA" as user
+actor "Exploitant\nIP autorisées" as operator
+
+cloud "Services externes" {
+  component "GitLab.com\nDépôt + pipeline + variables protégées" as gitlab
+  component "GitLab Container Registry\nImages versionnées par SHA / version" as registry
+  component "Open Food Facts\nAPI externe" as off
+}
+
+node "Hôte CI distinct — proposé\nLinux ; capacité à valider" as cihost {
+  component "GitLab Runner auto-hébergé\nJobs de test, scans et build isolés\nDéploiement réservé aux branches protégées" as runner
+  node "Staging — projet Compose séparé" as staging {
+    component "Même composition que production\nNginx, Keycloak, services et PostgreSQL\nSocial activable en P1\nDonnées, volumes, réseaux et secrets distincts" as stagingstack
+  }
+}
+
+node "VM APP Oracle — hypothèse à confirmer\nLinux ; 12 Go RAM / 2 vCPU indiqués sur le schéma" as app {
+  node "Docker Engine / Docker Compose" as docker {
+    package "Réseau edge" as edge {
+      component "frontend-edge\nNginx : build React + reverse proxy\nSeuls ports applicatifs publiés : 80 / 443" as nginx
+    }
+    package "Réseau backend" as backend {
+      component "Keycloak\nRealm TOQ" as keycloak
+      package "Conteneurs métier Spring Boot" as services {
+        component "User" as users
+        component "Recipe" as recipe
+        component "Nutrition" as nutrition
+        component "Planner" as planner
+        component "Social — P1\nDésactivé dans le MVP" as social
+      }
+    }
+    package "Réseau data — interne" as data {
+      database "PostgreSQL — une instance\ntoq_user | toq_recipe | toq_nutrition\ntoq_planner | toq_social (P1) | keycloak\nRôles séparés ; aucun port 5432 publié" as postgres
+    }
+    artifact "Médias Recipe\nVolume persistant chiffré" as media
+    artifact "PGDATA\nVolume persistant chiffré" as pgdata
+    artifact "Secrets et certificats\nMontages contrôlés en lecture seule\nHors Git et hors images" as secrets
+  }
+  component "Sauvegarde planifiée\nBases, médias, configuration Keycloak / infra\nChiffrement avant transfert" as backup
+}
+
+storage "Stockage de sauvegarde hors hôte\nChiffré ; cible et rétention à valider\nRestauration périodiquement testée" as backupstore
+
+user --> nginx : HTTPS 443\n80 : redirection vers HTTPS
+operator --> app : SSH\nIP et clés autorisées
+nginx --> keycloak : HTTPS / OIDC\nCertificat validé
+nginx --> services : HTTPS / API REST\nCertificats validés
+services --> keycloak : HTTPS / JWKS en cache\nValidation JWT locale
+services --> postgres : PostgreSQL TLS / verify-full\nUne base et un rôle par service
+keycloak --> postgres : PostgreSQL TLS / verify-full\nBase keycloak uniquement
+nutrition --> off : HTTPS sortant\nTimeouts et cache
+recipe --> media : Fichiers autorisés
+postgres --> pgdata : Persistance
+
+runner --> gitlab : HTTPS sortant\nPolling des jobs / dépôt / résultats
+runner --> registry : HTTPS\nPush des images après tests et scans
+app --> registry : HTTPS\nPull des images versionnées
+staging --> registry : HTTPS\nPull des images versionnées
+runner --> staging : Déploiement staging isolé\nPuis smoke tests / DAST
+runner --> app : SSH restreint à l'hôte CI\nCompose ; images SHA ; rollback
+
+backup --> postgres : Export des bases\nTLS ; compte de sauvegarde limité
+backup --> media : Lecture des médias
+backup --> backupstore : Transfert chiffré et authentifié\nCible à valider
+
+note left of edge
+  Pare-feu cloud et hôte :
+  80 / 443 accessibles publiquement.
+  SSH limité aux IP d'exploitation et du runner.
+  Aucun port Spring Boot ou PostgreSQL public.
+  Console d'administration Keycloak restreinte.
+end note
+
+note right of backend
+  Appartenance aux réseaux :
+  Nginx : edge + backend.
+  Services et Keycloak : backend + data.
+  PostgreSQL : data uniquement.
+  Les appels REST internes utilisent HTTPS.
+  Sorties nécessaires autorisées explicitement.
+end note
+
+note bottom of secrets
+  Autorité et certificats internes à valider.
+  Secrets montés uniquement aux composants concernés.
+  Disques / volumes et sauvegardes chiffrés.
+end note
+
+note bottom of app
+  Mono-hôte : aucune haute disponibilité revendiquée.
+  Healthchecks, restart policies, logs structurés, restauration et rollback.
+  Budget mémoire / CPU à mesurer avant validation du dimensionnement.
+  Les flux métier détaillés figurent dans le C4 Container.
+end note
+
+legend bottom
+  Proposition documentaire : aucun déploiement réalisé.
+  P0 : quatre services métier actifs. P1 : activation de Social et toq_social.
+  Un seul conteneur sert React et assure le reverse proxy.
+  Infrastructure CI / staging séparée de la VM APP ; isolation à valider.
+endlegend
+@enduml
