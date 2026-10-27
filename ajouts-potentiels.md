@@ -1,0 +1,5 @@
+- un user peut proposer des valeurs nutrionnelles pour les aliments ciqual ou off qui n'en ont pas
+- calcul automatique par un agent ou une bdd des valeurs nutrionnelles selon les aliments présents dans une recette
+- ajout des prix des aliments selon le magasin (récupérer les différents prix avec du scrapping, puis les stocker dans une bdd pour toujours avec des estimations)
+- un système de groupe pour la partie social avec de parler et partager avec ses amis seulement
+- organiser ses recettes sous forme de "playlist" genre sucré/salé/dessert/diné/diète etc etc 
