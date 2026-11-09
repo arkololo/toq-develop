@@ -1,0 +1,30 @@
+{
+	admin off
+	auto_https disable_redirects
+	skip_install_trust
+	# IP-address clients omit SNI; Docker's destination IP differs from the
+	# public VM IP, so select the public certificate explicitly in that case.
+	default_sni {$TOQ_TLS_SERVER_NAME}
+	# Only TCP ports are published by Compose; no HTTP/3 UDP listener.
+	servers {
+		protocols h1 h2
+	}
+}
+
+# Private IP certificates are signed by the local CA persisted in /data.
+# Import ONLY its public root certificate on each client PC.
+{$TOQ_PUBLIC_FRONTEND_URL} {
+	tls internal
+	reverse_proxy frontend-edge:8080
+}
+
+{$TOQ_PUBLIC_KEYCLOAK_URL} {
+	tls internal
+	reverse_proxy keycloak:8080
+}
+
+# Container-only liveness check; no published port, no TLS bypass.
+http://127.0.0.1:8082 {
+	bind 127.0.0.1
+	respond /healthz "ok" 200
+}

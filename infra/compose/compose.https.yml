@@ -1,0 +1,79 @@
+# Overlay applied inside compose.https.yaml. Compose >= 2.24.4 required.
+# Both TOQ_PUBLIC_*_URL variables must be HTTPS origins with their public ports.
+x-oidc-ready: &oidc-ready
+  depends_on:
+    keycloak:
+      condition: service_healthy
+
+services:
+  # Avoid simultaneous JVM startup during Keycloak augmentation on the 2 GiB VM.
+  user-service:
+    <<: *oidc-ready
+  recipe-service:
+    <<: *oidc-ready
+  nutrition-service:
+    <<: *oidc-ready
+  planner-service:
+    <<: *oidc-ready
+  social-service:
+    <<: *oidc-ready
+
+  frontend-edge:
+    ports: !reset []
+
+  keycloak:
+    # Only the TLS proxy publishes a port. Internal JWKS remain on keycloak:8080.
+    ports: !reset []
+    environment:
+      KC_HTTP_ENABLED: "true"
+      KC_PROXY_HEADERS: xforwarded
+    # Initial augmentation/startup takes several minutes on the 2 GiB VM.
+    healthcheck:
+      start_period: 600s
+      retries: 24
+
+  tls-edge:
+    image: caddy:2-alpine@sha256:78bd35025c7ba85961dd149ae670315129954e77abe2383ac47c89106b35ade9
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=16m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    environment:
+      TOQ_PUBLIC_FRONTEND_URL: ${TOQ_PUBLIC_FRONTEND_URL:?Set https://172.16.10.20:8080 in .env}
+      TOQ_PUBLIC_KEYCLOAK_URL: ${TOQ_PUBLIC_KEYCLOAK_URL:?Set https://172.16.10.20:8081 in .env}
+      TOQ_TLS_SERVER_NAME: ${TOQ_TLS_SERVER_NAME:-${TOQ_BIND_ADDRESS:-172.16.10.20}}
+    ports:
+      - "${TOQ_BIND_ADDRESS:-172.16.10.20}:8080:8080"
+      - "${TOQ_BIND_ADDRESS:-172.16.10.20}:8081:8081"
+    volumes:
+      - ./infra/reverse-proxy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks:
+      - edge
+    depends_on:
+      frontend-edge:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8082/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    mem_limit: 128m
+    cpus: 0.5
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  caddy-data:
+  caddy-config:

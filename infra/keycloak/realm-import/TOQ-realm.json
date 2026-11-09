@@ -24,7 +24,7 @@
   "clients": [
     {
       "clientId": "toq-web",
-      "name": "TOQ Web local",
+      "name": "TOQ Web",
       "enabled": true,
       "publicClient": true,
       "protocol": "openid-connect",
@@ -32,11 +32,11 @@
       "directAccessGrantsEnabled": false,
       "implicitFlowEnabled": false,
       "serviceAccountsEnabled": false,
-      "redirectUris": ["http://localhost:8080/*"],
-      "webOrigins": ["http://localhost:8080"],
+      "redirectUris": ["${TOQ_PUBLIC_FRONTEND_URL}/*"],
+      "webOrigins": ["${TOQ_PUBLIC_FRONTEND_URL}"],
       "attributes": {
         "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "http://localhost:8080/*"
+        "post.logout.redirect.uris": "${TOQ_PUBLIC_FRONTEND_URL}/*"
       },
       "defaultClientScopes": ["toq-api-audience", "toq-realm-roles", "toq-subject"]
     },

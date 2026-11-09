@@ -15,4 +15,10 @@ async function render() {
   )
 }
 
-void render()
+void render().catch((error: unknown) => {
+  const root = document.getElementById('root')!
+  const message = document.createElement('p')
+  message.setAttribute('role', 'alert')
+  message.textContent = error instanceof Error ? error.message : 'Impossible de connecter le service d?authentification.'
+  root.replaceChildren(message)
+})

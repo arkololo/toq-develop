@@ -1,0 +1,9 @@
+# Same project and persistent PostgreSQL volume as compose.yaml.
+# Explicit entry point: docker compose -f compose.https.yaml ...
+name: toq-local
+
+include:
+  - path:
+      - ./infra/compose/compose.dev.yml
+      - ./infra/compose/compose.https.yml
+    project_directory: .

@@ -1,6 +1,6 @@
 # TOQ
 
-TOQ réunit les recettes, les repères nutritionnels, le planning hebdomadaire, les courses et le partage. Le frontend React reprend la navigation latérale et les éléments fournis dans `base/Charte graphique`. L'application tourne **uniquement sur la machine locale** avec Docker Compose.
+TOQ réunit les recettes, les repères nutritionnels, le planning hebdomadaire, les courses et le partage. Le frontend React reprend la navigation latérale et les éléments fournis dans `base/Charte graphique`. L'application tourne avec Docker Compose, en local ou sur une VM Ubuntu. Voir le [guide Proxmox / Tailscale](docs/PROXMOX.md) pour les URL publiques, Keycloak, HTTPS et les tests distants.
 
 ## Démarrage
 
